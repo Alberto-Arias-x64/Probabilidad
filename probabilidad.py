@@ -21,12 +21,17 @@ marginal = de una compuesta sale una simple
 condicional = Recla del producto, una esta breviamente definida !!no reflejan causalidad!!
 """
 import numpy as np 
+import matplotlib.pyplot as plt 
+import pandas as pd 
 from numpy.random import binomial
 from scipy.stats import binom 
+from scipy.stats import norm 
 from math import factorial 
-import matplotlib.pyplot as plt 
 
-def Distribucion_binomial(k,n,p):
+def Distribucion_binomial():
+    k=int(input("numero de exitos: "))
+    n=int(input("numero de lanzamientos: "))
+    p=int(input("probabilidad de exito: "))
     return factorial(n)/(factorial(k)*factorial(n-k))*pow(p,k)*pow(1-p,n-k)
 
 def DB(rango):
@@ -39,17 +44,20 @@ def DB(rango):
     plt.subplot(1,2,2)
     plt.bar(values,teorico,color='b',alpha=0.5)
     plt.show()
-    return
+    return 0
 
+def Distribucion_gaussiana():
+    x = np.arange(-4,4,0.1)
+    mu=0.0
+    sigma=1
+    y = 1/(sigma*np.sqrt(2*np.pi))*np.exp(-0.5*pow((x-mu)/sigma,2))
+    plt.plot(x,y)
+    plt.show()
+    return 0
 
-#k= numero de exitos
-#n= numero de lansamientos
-#p= probabilidad de exito
-"""
-k=int(input("Numero 1"))
-n=int(input("Numero 2"))
-p=int(input("Numero 3"))
-print(Distribucion_binomial(k,n,p))
-"""
+def ejersisio_alas():
+    df = pd.read_excel('./s057.xls')
+    print(df)
+    return 0
 
-arr=DB(100000)
+ejersisio_alas()
