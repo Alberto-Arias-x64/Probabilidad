@@ -20,16 +20,22 @@ marginal = de una compuesta sale una simple
 
 condicional = Recla del producto, una esta breviamente definida !!no reflejan causalidad!!
 """
-from matplotlib import colors
 import numpy as np 
 import matplotlib.pyplot as plt
+import pandas as pd 
+from matplotlib import colors
+from numpy import hstack
 from numpy.core.defchararray import array
 from numpy.core.numeric import True_ 
-import pandas as pd 
 from numpy.random import binomial
+from numpy.random import normal
 from scipy.stats import binom 
 from scipy.stats import norm 
-from math import factorial 
+from mpl_toolkits.mplot3d import Axes3D
+from math import factorial
+from matplotlib import cm
+from scipy.stats.stats import ModeResult 
+from sklearn.neighbors import KernelDensity
 
 def Distribucion_binomial():
     k=int(input("numero de exitos: "))
@@ -85,4 +91,54 @@ def estimacion_dis(array1): #estimacion parametrica
     plt.plot(x,y,color='r')
     return 0
 
-ejersisio_alas()
+def distribucion_normal(): #estimacion parametrica
+    sample = normal(loc=50,scale=5, size=10000)# mu = 50 ,sigma = 5
+    mu = sample.mean()
+    sigma = sample.std()
+    dist = norm(mu, sigma)
+    values = [value for value in range(30, 70)]
+    probabilities = [dist.pdf(value) for value in values]
+    plt.hist(sample, bins=300, density=True)
+    plt.plot(values, probabilities)
+    plt.show()
+    return 0
+
+def distribucion_no_parametrica():
+    sample1 = normal(loc=20, scale=5 ,size=300)
+    sample2 = normal(loc=40, scale=5, size=700)
+    sample = hstack((sample1,sample2))
+
+    model = KernelDensity(bandwidth=2, kernel='gaussian')
+    sample = sample.reshape((len(sample),1))
+    model.fit(sample)
+
+    values = np.asarray([values for values in range(1,60)])
+    values = values.reshape((len(values),1))
+    probabilities = model.score_samples(values) #probabilidad logaritmica
+    probabilities = np.exp(probabilities) #regresandola a normal con una exponencial
+
+    plt.hist(sample,bins=30,density=True)
+    plt.plot(values,probabilities,color='r')
+    plt.show()
+
+    return 0
+
+def verosimilitud():
+    def likelihood(y,yp):
+        return yp*y+(1-yp)*(1-y)
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+
+    Y = np.arange(0,1,0.01)
+    YP = np.arange(0,1,0.01)
+    Y,YP = np.meshgrid(Y,YP)
+    Z = likelihood(Y,YP)
+
+    surf = ax.plot_surface(Y, YP, Z, cmap=cm.coolwarm)
+    fig.colorbar(surf,shrink=0.5,aspect=5)
+    plt.show()
+
+def vero_Log(): #maximo de los logaritmos
+    pass
+
+verosimilitud()
